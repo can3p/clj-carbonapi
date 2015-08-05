@@ -1,0 +1,9 @@
+type datapoint = ( float nullable * int )
+
+
+type metric = {
+    target: string;
+    datapoints: datapoint list;
+}
+
+type answer = metric list

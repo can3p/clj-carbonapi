@@ -1,2 +1,5 @@
 _build
 bonapicar.native
+render_json_*
+render_json.ml
+render_json.mli

@@ -20,8 +20,8 @@ let process_target target =
     Client.get source
     >>= fun (resp, body) -> Body.to_string body
     >>= fun (body) ->
-        let json = Yojson.Safe.from_string body in
-        json |> Yojson.Safe.pretty_to_string ~std:false |> return
+        let metrics = Render_json_j.answer_of_string body in
+        metrics |> Render_json_j.string_of_answer |> return
     >>= fun (body) ->
         let status = Response.status resp in
         make_response status body |> return
