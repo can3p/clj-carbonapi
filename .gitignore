@@ -3,3 +3,5 @@ bonapicar.native
 render_json_*
 render_json.ml
 render_json.mli
+stub/node_modules
+stub/npm-debug.log
