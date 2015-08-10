@@ -2,7 +2,13 @@ open Core.Std
 open Async.Std
 open Cohttp_async
 
-let data_source = Uri.of_string "http://localhost:8080/render"
+type run_options = {
+    mutable source: string;
+};;
+
+let opts = {
+    source = "";
+};;
 
 let make_response status body =
     let headers = Cohttp.Header.of_list [
@@ -13,6 +19,7 @@ let make_response status body =
     (resp, Body.of_string body)
 
 let process_target target =
+    let data_source = Uri.of_string (opts.source ^ "/render") in
     let source = Uri.add_query_params' data_source [
         ("format", "json");
         ("target", target)
@@ -49,8 +56,23 @@ let handler ~body:_ _addr req =
     let path = Request.uri req |> Uri.path in
     route path req
 
-let () =
-    Server.create (Tcp.on_port 8081) handler |> ignore
+let run source port () =
+    opts.source <- source;
+    Server.create (Tcp.on_port port) handler
+    >>= fun _ -> Deferred.never ()
 
 let () =
-    never_returns (Scheduler.go ())
+    Command.async_basic
+        ~summary:"Carbon api wannabe"
+        Command.Spec.(
+            empty
+            +> flag "--source" (optional_with_default
+                                "http://localhost:4000"
+                                string)
+               ~doc:" A host to get the data from (default http://localhost:4000)"
+            +> flag "--port" (optional_with_default
+                                8081
+                                int)
+               ~doc:" A port to start the server on (default 8081)"
+        ) run
+    |> Command.run
