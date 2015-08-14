@@ -5,3 +5,14 @@ render_json.ml
 render_json.mli
 stub/node_modules
 stub/npm-debug.log
+clj-proto/target
+clj-proto/resources
+clj-proto/target
+clj-proto/classes
+clj-proto/checkouts
+clj-proto/pom.xml
+clj-proto/pom.xml.asc
+clj-proto/*.jar
+clj-proto/*.class
+clj-proto/.lein-*
+clj-proto/.nrepl-port
