@@ -13,14 +13,24 @@
     string = #'\"[a-zA-Z0-9_-]+\"'
     number = #'\\d+'
     opt-sp = #'[ ]*'
-    target = #'[a-z]+(\\.((\\*([a-z]+|$))|(\\*(?!\\*)))+)*'"))
+    target = target-literal ( target-dot target-star* (target-literal target-star*)* )*
+    target-literal = #'[a-zA-Z]+'
+    target-star = '*'
+    target-dot = '.'
+"))
 
 (def parser-transform {
                        :argument identity
                        :source identity
                        :number read-string
                        :string read-string
-                       :func list
+                       :func (fn [& args]
+                                 (list 'call-func args))
+                       :target-dot identity
+                       :target-literal identity
+                       :target-star identity
+                       :target (fn [& args]
+                                 (list 'grep-target (apply str args)))
                        })
 
 (defn decompose-target [source]
