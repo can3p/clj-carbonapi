@@ -25,12 +25,12 @@
                        :number read-string
                        :string read-string
                        :func (fn [& args]
-                                 (list 'call-func args))
+                               (conj args :call-func))
                        :target-dot identity
                        :target-literal identity
                        :target-star identity
                        :target (fn [& args]
-                                 (list 'grep-target (apply str args)))
+                                 (list :grep-target (apply str args)))
                        })
 
 (defn decompose-target [source]
@@ -38,6 +38,33 @@
 
 ;; (decompose-target "abs(avg(test.*, 2), \"abc\")") will result in
 ;; ("abs" ("avg" [:target "test.*"] 2) "abc")
+
+(defn extract-targets-flat [[h & r]]
+  (cond
+    (= nil h) nil
+    (= h 'grep-target) (conj (extract-targets-flat (rest r)) (first r))
+    :else (extract-targets-flat r)))
+
+(defn extract-targets [tree]
+  (let [f-list (flatten tree)]
+    (extract-targets-flat f-list)))
+
+(defn expand-target [t]
+  (let [tree (decompose-target t)]
+    [(extract-targets tree) tree]))
+
+(defn eval-tree [t]
+  (let [eval-map {
+                  :call-func (fn [& args] (println "call-func" args) (first args))
+                  :grep-target (fn [& args] (println "grep-target" args) (first args))
+                  }
+        eval-func (fn [form]
+                    (cond
+                      (and (seq? form) (contains? eval-map (first form)))
+                      (apply (eval-map (first form)) (rest form))
+                      :else form
+                      ))]
+    (clojure.walk/postwalk eval-func t)))
 
 (def source-host "http://localhost:4000/render")
 
