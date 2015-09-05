@@ -6,4 +6,5 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [cheshire "5.5.0"]
                  [instaparse "1.4.1"]
-                 [clj-http "2.0.0"]])
+                 [clj-http "2.0.0"]
+                 [incanter "1.5.6"]])
