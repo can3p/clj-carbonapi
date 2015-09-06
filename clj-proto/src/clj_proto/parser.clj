@@ -53,19 +53,25 @@
   (let [tree (decompose-target t)]
     [(extract-targets tree) tree]))
 
-;; (defn eval-tree [t]
-;;   (let [eval-map {
-;;                   :call-func (fn [& args] (println "call-func" args) (first args))
-;;                   :grep-target (fn [& args] (println "grep-target" args) (first args))
-;;                   }
-;;         eval-func (fn [form]
-;;                     (cond
-;;                       (and (seq? form) (contains? eval-map (first form)))
-;;                       (apply (eval-map (first form)) (rest form))
-;;                       :else form
-;;                       ))]
-;;     (clojure.walk/postwalk eval-func t)))
+(defn matches? [pattern val]
+  (not (nil? (re-find pattern val))))
 
-;; stub for now
-(defn eval-tree [tree targets]
-  targets)
+(defn- grep-target [targets target]
+  (let [ptrn (re-pattern (clojure.string/replace target "*" "[^.]+"))]
+    (filter (fn [t]
+              (matches? ptrn
+                        (:target t)))
+            targets)))
+
+(defn eval-tree [t targets]
+  (let [eval-map {
+                  :call-func clj-proto.functions/call-func
+                  :grep-target (partial grep-target targets)
+                  }
+        eval-func (fn [form]
+                    (cond
+                      (and (seq? form) (contains? eval-map (first form)))
+                      (apply (eval-map (first form)) (rest form))
+                      :else form
+                      ))]
+    (clojure.walk/postwalk eval-func t)))
