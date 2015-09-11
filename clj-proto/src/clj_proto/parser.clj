@@ -65,7 +65,7 @@
                         (:target t)))
             targets)))
 
-(defn eval-tree [t targets]
+(defn eval-tree [targets t]
   (let [eval-map {
                   :call-func clj-proto.functions/call-func
                   :grep-target (partial grep-target targets)

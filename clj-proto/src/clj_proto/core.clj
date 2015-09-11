@@ -1,11 +1,30 @@
 (ns clj-proto.core)
 
-(defn query [query-str]
-  (let [[sources tree] (clj-proto.parser/parse-query query-str)
-        targets (clj-proto.remote/fetch sources)]
-    (clj-proto.parser/eval-tree tree targets)))
+(defn- unique [l] (apply list (set l)))
 
-(defn view-query [query-str]
-  (-> (query query-str)
+(defn- concat-sources [sources]
+  (unique
+   (apply concat sources)))
+
+(defn query [queries]
+  (let [parsed (map clj-proto.parser/parse-query queries)
+        sources (concat-sources (map first parsed))
+        trees (map second parsed)
+        targets (clj-proto.remote/fetch sources)
+        eval-tree (partial clj-proto.parser/eval-tree targets)]
+    (apply concat
+           (map eval-tree trees))))
+
+(defn view-query [queries & options]
+  (-> (query queries)
+      (clj-proto.chart/draw-series)
+      (clj-proto.chart/view)))
+
+
+(defn query-single [query-str]
+  (query [query-str]))
+
+(defn view-query-single [query-str & options]
+  (-> (query-single query-str)
       (clj-proto.chart/draw-series)
       (clj-proto.chart/view)))
