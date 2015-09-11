@@ -15,7 +15,7 @@
 
 (defn- map-values [func series fname]
   (let [data (:datapoints series)
-        app-func (fn [[val ts]] [(func val) ts])
+        app-func (fn [[val ts]] [(if (nil? val) nil (func val)) ts])
         new-data (map app-func data)]
     (assoc series
            :target (fname series)
