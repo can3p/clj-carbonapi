@@ -13,8 +13,9 @@
     string = #'\"[a-zA-Z0-9_-]+\"'
     number = #'\\d+'
     opt-sp = #'[ ]*'
-    target = target-literal ( target-dot target-star* (target-literal target-star*)* )*
-    target-literal = #'[a-zA-Z]+'
+    target = first-target-literal ( target-dot target-star* (target-literal target-star*)* )*
+    first-target-literal = #'[a-zA-Z][a-zA-Z0-9_]*'
+    target-literal = #'[a-zA-Z0-9_]+'
     target-star = '*'
     target-dot = '.'
 "))
@@ -27,6 +28,7 @@
                        :func (fn [& args]
                                (conj args :call-func))
                        :target-dot identity
+                       :first-target-literal identity
                        :target-literal identity
                        :target-star identity
                        :target (fn [& args]
