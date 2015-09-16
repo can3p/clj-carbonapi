@@ -1,13 +1,10 @@
 (ns clj-proto.server
   (:import [javax.imageio ImageIO]
-           [java.io ByteArrayOutputStream ByteArrayInputStream]
-           [org.jfree.chart JFreeChart]
-           [java.awt.image BufferedImage])
+           [java.io ByteArrayOutputStream ByteArrayInputStream])
   (:require [compojure.core :refer :all]
             [ring.middleware.json :refer [wrap-json-response]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.util.response :refer [response]]
-            [compojure.response :refer [Renderable render]]
             [org.httpkit.server :refer [run-server]]))
 
 (defn- map-keys [func hash]
@@ -19,13 +16,14 @@
   (let [out (ByteArrayOutputStream.)]
     (do (ImageIO/write image "png" out) (ByteArrayInputStream. (.toByteArray out)))))
 
-(extend-protocol Renderable
-  JFreeChart
-  (render [image _]
-    (-> (ring.util.response/response (render-image (.createBufferedImage image 500 300)))
-        (ring.util.response/content-type "image/png"))))
+(defn- response-chart [chart options]
+  (let [w (Integer/parseInt (or (:width options) "500"))
+        h (Integer/parseInt (or (:height options) "300"))
+        img (.createBufferedImage chart w h)]
+  (-> (ring.util.response/response (render-image img))
+      (ring.util.response/content-type "image/png"))))
 
-(defn- render-route [req]
+(defn- render [req]
   (let [qparams (map-keys keyword (:query-params req))
         targets (-> qparams
                     :target
@@ -36,10 +34,10 @@
         result (clj-proto.core/render-query targets)]
     (if (= "json" (:format qparams))
       (response (clj-proto.core/query targets))
-      (clj-proto.core/render-query targets))))
+      (response-chart (clj-proto.core/render-query targets) params))))
 
 (defroutes app
-  (GET "/render" [] render-route))
+  (GET "/render" [] render))
 
 (defonce server (atom nil))
 
