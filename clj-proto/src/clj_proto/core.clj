@@ -15,6 +15,10 @@
     (apply concat
            (map eval-tree trees))))
 
+(defn render-query [queries & options]
+  (-> (query queries)
+      (clj-proto.chart/draw-series)))
+
 (defn view-query [queries & options]
   (-> (query queries)
       (clj-proto.chart/draw-series)
@@ -23,6 +27,9 @@
 
 (defn query-single [query-str]
   (query [query-str]))
+
+(defn render-query-single [query-str]
+  (render-query [query-str]))
 
 (defn view-query-single [query-str & options]
   (-> (query-single query-str)
