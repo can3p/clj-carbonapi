@@ -1,4 +1,4 @@
-(ns carbon-api.core)
+(ns carbonapi.core)
 
 (defn- unique [l] (apply list (set l)))
 
@@ -7,22 +7,22 @@
    (apply concat sources)))
 
 (defn query [queries]
-  (let [parsed (map carbon-api.parser/parse-query queries)
+  (let [parsed (map carbonapi.parser/parse-query queries)
         sources (concat-sources (map first parsed))
         trees (map second parsed)
-        targets (carbon-api.remote/fetch sources)
-        eval-tree (partial carbon-api.parser/eval-tree targets)]
+        targets (carbonapi.remote/fetch sources)
+        eval-tree (partial carbonapi.parser/eval-tree targets)]
     (apply concat
            (map eval-tree trees))))
 
 (defn render-query [queries & options]
   (-> (query queries)
-      (carbon-api.chart/draw-series)))
+      (carbonapi.chart/draw-series)))
 
 (defn view-query [queries & options]
   (-> (query queries)
-      (carbon-api.chart/draw-series)
-      (carbon-api.chart/view)))
+      (carbonapi.chart/draw-series)
+      (carbonapi.chart/view)))
 
 
 (defn query-single [query-str]
@@ -33,5 +33,5 @@
 
 (defn view-query-single [query-str & options]
   (-> (query-single query-str)
-      (carbon-api.chart/draw-series)
-      (carbon-api.chart/view)))
+      (carbonapi.chart/draw-series)
+      (carbonapi.chart/view)))

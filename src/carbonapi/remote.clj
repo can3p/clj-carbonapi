@@ -1,4 +1,4 @@
-(ns carbon-api.remote
+(ns carbonapi.remote
   (:require [clj-http.client :as client]))
 
 

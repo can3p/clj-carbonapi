@@ -1,4 +1,4 @@
-(ns carbon-api.chart
+(ns carbonapi.chart
   (:require
    [incanter.core :as icore]
    [incanter.charts :as icharts]))

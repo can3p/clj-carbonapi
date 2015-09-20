@@ -1,4 +1,4 @@
-(defproject clj-carbon-api "0.1.0-SNAPSHOT"
+(defproject clj-carbonapi "0.1.0-SNAPSHOT"
   :description "Clojure version of carbon-api"
   :url "https://github.com/can3p/clj-carbon-api"
   :license {:name "Eclipse Public License"

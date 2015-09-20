@@ -1,5 +1,5 @@
-(ns carbon-api.functions
-  (:require [carbon-api.math :refer [abs]]))
+(ns carbonapi.functions
+  (:require [carbonapi.math :refer [abs]]))
 
 (defn- get-arg [arg]
   (cond
@@ -27,7 +27,7 @@
        series-lists))
 
 (defn call-func [func & args]
-  (let [f (resolve (symbol (str "carbon-api.functions/" func)))]
+  (let [f (resolve (symbol (str "carbonapi.functions/" func)))]
     (apply f args)))
 
 (defn absolute [series-lists]
