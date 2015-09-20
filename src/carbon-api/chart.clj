@@ -1,4 +1,4 @@
-(ns clj-proto.chart
+(ns carbon-api.chart
   (:require
    [incanter.core :as icore]
    [incanter.charts :as icharts]))

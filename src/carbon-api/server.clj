@@ -1,4 +1,4 @@
-(ns clj-proto.server
+(ns carbon-api.server
   (:import [javax.imageio ImageIO]
            [java.io ByteArrayOutputStream ByteArrayInputStream])
   (:require [compojure.core :refer :all]
@@ -31,10 +31,10 @@
                     flatten)
         params (select-keys qparams
                             [:width :height :title])
-        result (clj-proto.core/render-query targets)]
+        result (carbon-api.core/render-query targets)]
     (if (= "json" (:format qparams))
-      (response (clj-proto.core/query targets))
-      (response-chart (clj-proto.core/render-query targets) params))))
+      (response (carbon-api.core/query targets))
+      (response-chart (carbon-api.core/render-query targets) params))))
 
 (defroutes app
   (GET "/render" [] render))

@@ -1,4 +1,4 @@
-(ns clj-proto.remote
+(ns carbon-api.remote
   (:require [clj-http.client :as client]))
 
 

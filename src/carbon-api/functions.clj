@@ -1,5 +1,5 @@
-(ns clj-proto.functions
-  (:require [clj-proto.math :refer [abs]]))
+(ns carbon-api.functions
+  (:require [carbon-api.math :refer [abs]]))
 
 (defn- get-arg [arg]
   (cond
@@ -27,7 +27,7 @@
        series-lists))
 
 (defn call-func [func & args]
-  (let [f (resolve (symbol (str "clj-proto.functions/" func)))]
+  (let [f (resolve (symbol (str "carbon-api.functions/" func)))]
     (apply f args)))
 
 (defn absolute [series-lists]

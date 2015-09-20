@@ -1,6 +1,6 @@
-(defproject clj-proto "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+(defproject clj-carbon-api "0.1.0-SNAPSHOT"
+  :description "Clojure version of carbon-api"
+  :url "https://github.com/can3p/clj-carbon-api"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]

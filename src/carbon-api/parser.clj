@@ -1,4 +1,4 @@
-(ns clj-proto.parser
+(ns carbon-api.parser
   (:require [clj-http.client :as client]
             [instaparse.core :as insta]))
 
@@ -67,7 +67,7 @@
 
 (defn eval-tree [targets t]
   (let [eval-map {
-                  :call-func clj-proto.functions/call-func
+                  :call-func carbon-api.functions/call-func
                   :grep-target (partial grep-target targets)
                   }
         eval-func (fn [form]
