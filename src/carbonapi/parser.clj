@@ -5,19 +5,17 @@
 (def parser
   (insta/parser
    "source = target | func
-    func = #'[a-zA-Z]+' <open-br> argument (<comma> argument)* <close-br>
-    open-br = '('
-    close-br = ')'
-    comma = ','
-    argument = <opt-sp> ( number | string | target | func ) <opt-sp>
+    func = #'[a-zA-Z]+' '(' argument (',' argument)* ')'
+    argument = <opt-sp> ( number | string | target | func) <opt-sp>
     string = #'\"[a-zA-Z0-9_-]+\"'
     number = #'\\d+'
     opt-sp = #'[ ]*'
-    target = first-target-literal ( target-dot target-star* (target-literal target-star*)* )*
-    first-target-literal = #'[a-zA-Z][a-zA-Z0-9_]*'
+    target = chunk ( <'.'> target-star* chunk )*
+    chunk = ( target-literal | target-star | target-enum | target-range )+
     target-literal = #'[a-zA-Z0-9_]+'
     target-star = '*'
-    target-dot = '.'
+    target-range = <'['> #'[a-zA-Z_-]+' <']'>
+    target-enum = <'{'> target-literal (<','>  target-literal )* <'}'>
 "))
 
 (def parser-transform {
@@ -27,15 +25,12 @@
                        :string read-string
                        :func (fn [& args]
                                (conj args :call-func))
-                       :target-dot identity
-                       :first-target-literal identity
-                       :target-literal identity
-                       :target-star identity
+                       :chunk (fn [& args] args)
                        :target (fn [& args]
-                                 (list :grep-target (apply str args)))
+                                 (list :grep-target args))
                        })
 
-(defn- decompose-target [source]
+(defn decompose-target [source]
   (->> (parser source) (insta/transform parser-transform)))
 
 ;; (decompose-target "abs(avg(test.*, 2), \"abc\")") will result in
@@ -54,6 +49,23 @@
 (defn parse-query [t]
   (let [tree (decompose-target t)]
     [(extract-targets tree) tree]))
+
+(defn- build-chunk [els]
+  (let [build (fn [[symb arg :as args]]
+                (case symb
+                  :target-literal arg
+                  :target-star "*"
+                  :target-enum (str "{"
+                                    (clojure.string/join
+                                     ","
+                                     (map second (rest args)))
+                                    "}")))]
+    (apply str (map build els))))
+
+(defn build-target [l]
+  (clojure.string/join
+   "."
+   (map build-chunk l)))
 
 (defn matches? [pattern val]
   (not (nil? (re-find pattern val))))
