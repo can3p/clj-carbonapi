@@ -17,8 +17,8 @@
     (do (ImageIO/write image "png" out) (ByteArrayInputStream. (.toByteArray out)))))
 
 (defn- response-chart [chart options]
-  (let [w (Integer/parseInt (or (:width options) "500"))
-        h (Integer/parseInt (or (:height options) "300"))
+  (let [w (Integer/parseInt (or (:width options) "330"))
+        h (Integer/parseInt (or (:height options) "250"))
         img (.createBufferedImage chart w h)]
   (-> (ring.util.response/response (render-image img))
       (ring.util.response/content-type "image/png"))))
