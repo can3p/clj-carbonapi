@@ -30,6 +30,9 @@
                        :chunk (fn [& args] args)
                        :target (fn [& args]
                                  (list :grep-target args))
+                       :first-chunk (fn [& args] args)
+                       :first-target-literal (fn [& args]
+                                               (vec (conj args :target-literal)))
                        })
 
 (defn decompose-target [source]
