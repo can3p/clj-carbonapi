@@ -18,7 +18,12 @@ function resolve_metrics_(query) {
     }, []);
   }
 
-  var query = new RegExp(query.replace(/\*/g, "[^.]+"));
+  var query = new RegExp(query
+                         .replace(/\*/g, "[^.]+")
+                         .replace(/{([^}]+)}/g, function(match, args) {
+                           return "(" + args.replace(/,/g, "|") + ")";
+                         })
+                        );
   return Object.keys(metrics)
                     .filter(function(metric) {
                       return metric.match(query)
