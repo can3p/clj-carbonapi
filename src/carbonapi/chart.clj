@@ -22,7 +22,14 @@
      :label (:target s)
      }))
 
-(defn draw-series [series]
+(defn- post-process [plot options]
+  (do
+    (if-let [title (:title options)]
+      (.setTitle plot title))
+    plot
+    ))
+
+(defn draw-series [series options]
   (let [prepared (map prepare-data series)
         f (first prepared)
         r (rest prepared)
@@ -33,13 +40,15 @@
               :legend true
               :x-label ""
               :y-label ""
-              )]
-    (reduce (fn [p v]
-              (icharts/add-lines p
-                         (:times v)
-                         (:val v)
-                         :series-label (:label v)
-                         )) plot r)))
+              )
+        complete-plot (reduce (fn [p v]
+                  (icharts/add-lines p
+                                     (:times v)
+                                     (:val v)
+                                     :series-label (:label v)
+                                     )) plot r)]
+    (post-process plot options)))
+
 
 (defn view [plot]
   (icore/view plot))

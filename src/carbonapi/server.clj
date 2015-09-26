@@ -34,7 +34,7 @@
         result (carbonapi.core/render-query targets)]
     (if (= "json" (:format qparams))
       (response (carbonapi.core/query targets))
-      (response-chart (carbonapi.core/render-query targets) params))))
+      (response-chart (carbonapi.core/render-query targets params) params))))
 
 (defroutes app
   (GET "/render" [] render))
