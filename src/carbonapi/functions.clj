@@ -10,7 +10,7 @@
 (defn- func-name [name & args]
   (str name
        "("
-       (clojure.string/join ", " (map get-arg args))
+       (clojure.string/join "," (map get-arg args))
        ")"))
 
 (defn- map-values [func series fname]
