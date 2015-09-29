@@ -1,5 +1,6 @@
 (ns carbonapi.parser
   (:require [clj-http.client :as client]
+            [carbonapi.functions]
             [instaparse.core :as insta]))
 
 (def parser

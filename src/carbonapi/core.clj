@@ -1,4 +1,7 @@
-(ns carbonapi.core)
+(ns carbonapi.core
+  (:require [carbonapi.parser]
+            [carbonapi.remote]
+            [carbonapi.chart]))
 
 (defn- unique [l] (apply list (set l)))
 
@@ -17,11 +20,11 @@
 
 (defn render-query [queries & [options]]
   (-> (query queries)
-      (carbonapi.chart/draw-series)))
+      (carbonapi.chart/draw-series options)))
 
 (defn view-query [queries & [options]]
   (-> (query queries)
-      (carbonapi.chart/draw-series)
+      (carbonapi.chart/draw-series options)
       (carbonapi.chart/view)))
 
 

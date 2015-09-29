@@ -2,6 +2,7 @@
   (:import [javax.imageio ImageIO]
            [java.io ByteArrayOutputStream ByteArrayInputStream])
   (:require [compojure.core :refer :all]
+            [carbonapi.core]
             [ring.middleware.json :refer [wrap-json-response]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.util.response :refer [response]]
@@ -30,8 +31,7 @@
                     list
                     flatten)
         params (select-keys qparams
-                            [:width :height :title])
-        result (carbonapi.core/render-query targets)]
+                            [:width :height :title])]
     (if (= "json" (:format qparams))
       (response (carbonapi.core/query targets))
       (response-chart (carbonapi.core/render-query targets params) params))))
@@ -41,14 +41,14 @@
 
 (defonce server (atom nil))
 
-(defn stop []
+(defn stop! []
   (when-not (nil? @server)
     ;; graceful shutdown: wait 100ms for existing requests to be finished
     ;; :timeout is optional, when no timeout, stop immediately
     (@server :timeout 100)
     (reset! server nil)))
 
-(defn start []
+(defn start! []
   (reset! server (run-server (-> app
                                  wrap-params
                                  wrap-json-response)
