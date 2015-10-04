@@ -48,9 +48,9 @@
     (@server :timeout 100)
     (reset! server nil)))
 
-(defn start! []
+(defn start! [port]
   (reset! server (run-server (-> app
                                  wrap-params
                                  wrap-json-response)
-                             {:port 5000})))
+                             {:port port})))
 
