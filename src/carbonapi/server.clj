@@ -8,7 +8,9 @@
             [ring.util.response :refer [response]]
             [org.httpkit.server :refer [run-server]]))
 
-(defn- map-keys [func hash]
+(defn- map-keys
+  "Transform all keys of the map with the function"
+  [func hash]
   (let [arr (into [] hash)]
     (reduce (fn [acc [key val]]
               (assoc acc (func key) val)) {} arr)))
@@ -17,7 +19,9 @@
   (let [out (ByteArrayOutputStream.)]
     (do (ImageIO/write image "png" out) (ByteArrayInputStream. (.toByteArray out)))))
 
-(defn- response-chart [chart options]
+(defn- response-chart
+  "Transform JFreeChart object to the png image"
+  [chart options]
   (let [w (Integer/parseInt (or (:width options) "330"))
         h (Integer/parseInt (or (:height options) "250"))
         img (.createBufferedImage chart w h)]
