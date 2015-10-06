@@ -6,7 +6,6 @@ ocaml/render_json.mli
 stub/node_modules
 stub/npm-debug.log
 target
-resources
 target
 classes
 checkouts

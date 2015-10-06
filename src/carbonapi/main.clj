@@ -19,6 +19,7 @@
   (do
     (println (str "Starting server on localhost:" (:port options)))
     (carbonapi.remote/set-host! (:host options))
+    (carbonapi.remote/set-format! (:source-format options))
     (carbonapi.server/start! (:port options))))
 
 (defn error-msg [errors]
@@ -30,6 +31,9 @@
                   [nil "--host HOST" "carbonzipper host"
                    :validate [#(re-find #"^https?:\/\/\w+" %) "Should be a full host name includeing protocol"]
                    :default "http://localhost:4000"]
+                  [nil "--source-format FORMAT" "carbonzipper data format to request (json and protobuf values supported)"
+                   :validate [#(contains? #{"json" "protobuf"} %) "Can be only json or protobuf for now"]
+                   :default "json"]
                   [nil "--port PORT" "server port"
                    :default 5000
                    :parse-fn #(Integer/parseInt %)]
