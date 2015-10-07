@@ -15,7 +15,9 @@
     (reduce (fn [acc [key val]]
               (assoc acc (func key) val)) {} arr)))
 
-(defn- render-image [image]
+(defn- render-image
+  "Takes ByteArrayInputStream and transforms it to a png image"
+  [image]
   (let [out (ByteArrayOutputStream.)]
     (do (ImageIO/write image "png" out) (ByteArrayInputStream. (.toByteArray out)))))
 
@@ -28,7 +30,9 @@
   (-> (ring.util.response/response (render-image img))
       (ring.util.response/content-type "image/png"))))
 
-(defn- render [req]
+(defn- render
+  "Render route"
+  [req]
   (let [qparams (map-keys keyword (:query-params req))
         targets (-> qparams
                     :target
@@ -45,14 +49,18 @@
 
 (defonce server (atom nil))
 
-(defn stop! []
+(defn stop!
+  "Stop server"
+  []
   (when-not (nil? @server)
     ;; graceful shutdown: wait 100ms for existing requests to be finished
     ;; :timeout is optional, when no timeout, stop immediately
     (@server :timeout 100)
     (reset! server nil)))
 
-(defn start! [port]
+(defn start!
+  "Start server. The atom is used, so that server state can be controlled from the repl"
+  [port]
   (reset! server (run-server (-> app
                                  wrap-params
                                  wrap-json-response)

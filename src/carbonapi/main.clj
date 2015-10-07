@@ -3,11 +3,15 @@
             [carbonapi.server])
   (:gen-class))
 
-(defn- exit [status msg]
+(defn- exit
+  "Prints message and exits with specified error code"
+  [status msg]
   (println msg)
   (System/exit status))
 
-(defn- usage [options-summary]
+(defn- usage
+  "Returns general help message. Commanline switches help should be passed as an argument"
+  [options-summary]
   (->> ["carbonapi, clojure version"
         ""
         "Options:"
@@ -15,14 +19,18 @@
         ]
        (clojure.string/join \newline)))
 
-(defn- start-server [options]
+(defn- start-server
+  "Starts server with specified parameters. Currently only remote host (:host) and communication data format (:source-format) is supported in options"
+  [options]
   (do
     (println (str "Starting server on localhost:" (:port options)))
     (carbonapi.remote/set-host! (:host options))
     (carbonapi.remote/set-format! (:source-format options))
     (carbonapi.server/start! (:port options))))
 
-(defn error-msg [errors]
+(defn error-msg
+  "Returns an error message"
+  [errors]
   (str "The following errors occurred while parsing your command:\n\n"
        (clojure.string/join \newline errors)))
 
